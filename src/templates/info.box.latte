@@ -1,0 +1,12 @@
+{default string|null $bg = null}
+<div class="info-box">
+	<span n:ifset="icon" n:class="'info-box-icon elevation-1', $bg ?: 'bg-info'">{include icon}</span>
+
+	<div class="info-box-content">
+		<span class="info-box-text">{block title}{/block}</span>
+		<span class="info-box-number">
+			{block content}{/block}
+		</span>
+	</div>
+	<!-- /.info-box-content -->
+</div>

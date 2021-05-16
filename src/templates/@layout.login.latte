@@ -1,0 +1,62 @@
+{layout none}
+{varType WebChemistry\AdminLTE\AdministrationConfiguration $config}
+{var $formProvider = $config->getSignInFormProvider()}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>{block title|trim|stripHtml}{$config->getTitle()}{/block}</title>
+
+	{$config->getFavicon()}
+
+	<link n:foreach="$config->getStylesheet() as $css" rel="stylesheet" href="{$css}">
+</head>
+<body class="hold-transition login-page">
+	<div class="login-box">
+		<div class="login-logo">
+			<a href="{$config->getHomepageLink()}">{$config->getLogoName()}</a>
+		</div>
+		<!-- /.login-logo -->
+		<div class="card">
+			<div class="card-body login-card-body">
+				<p class="login-box-msg">{$formProvider->getCaption()}</p>
+
+				<form n:name="loginForm">
+					<ul n:if="$form->hasErrors()">
+						<li n:foreach="$form->getErrors() as $error" class="text-danger">{$error}</li>
+					</ul>
+
+					<div class="input-group mb-3">
+						<input n:name="$form[$formProvider->getInputId()]" class="form-control" placeholder="{$form[$formProvider->getInputId()]->caption}">
+						<div class="input-group-append">
+							<div class="input-group-text">
+								<span class="fas fa-asterisk"></span>
+							</div>
+						</div>
+					</div>
+					<div class="input-group mb-3">
+						<input n:name="$form[$formProvider->getInputPassword()]" class="form-control" placeholder="{$form[$formProvider->getInputPassword()]->caption}">
+						<div class="input-group-append">
+							<div class="input-group-text">
+								<span class="fas fa-lock"></span>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<!-- /.col -->
+						<div class="col-12">
+							<input n:name="$formProvider->getInputSubmit()" class="btn btn-primary btn-block">
+						</div>
+						<!-- /.col -->
+					</div>
+				</form>
+			</div>
+			<!-- /.login-card-body -->
+		</div>
+	</div>
+	<!-- /.login-box -->
+
+	<script n:foreach="$config->getJavascript() as $js" src="{$js}"></script>
+</body>
+</html>
