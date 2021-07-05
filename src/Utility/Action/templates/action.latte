@@ -1,0 +1,34 @@
+{block title}
+	{$title}
+{/block}
+
+{block content}
+	{foreach $infoBoxes as [$title, $content]}
+		<div class="row">
+			{iterateWhile}
+				{if $iterator->getCounter() % 3 === 0}
+					<div class="clearfix hidden-md-up"></div>
+				{/if}
+				<div class="col-12 col-sm-6 col-md-3">
+					<div class="info-box">
+{*						<span n:ifset="icon" n:class="'info-box-icon elevation-1', $bg ?: 'bg-info'">{include icon}</span>*}
+
+						<div class="info-box-content">
+							<span class="info-box-text">{$title}</span>
+							<span class="info-box-number">{$content}</span>
+						</div>
+					</div>
+				</div>
+			{/iterateWhile $iterator->getCounter() % 4 !== 0}
+		</div>
+	{/foreach}
+
+	{foreach $panels as [$title, $controlName]}
+		{embed $embedPath . '/box.latte'}
+			{block title}{$title}{/block}
+			{block content}
+				{control $controlName}
+			{/block}
+		{/embed}
+	{/foreach}
+{/block}

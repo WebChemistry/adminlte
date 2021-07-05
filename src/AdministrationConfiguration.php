@@ -19,6 +19,14 @@ abstract class AdministrationConfiguration
 
 	private Presenter $presenter;
 
+	protected string $adminLteVersion = '3.1.0';
+
+	protected string $bootstrapVersion = '4.6.0';
+
+	protected string $jqueryVersion = '3.6.0';
+
+	protected string $fontAwesomeVersion = '5.15.3';
+
 	public function __construct(
 		private IRequest $request,
 		private LinkGenerator $linkGenerator,
@@ -98,21 +106,27 @@ abstract class AdministrationConfiguration
 		return $this->request->getUrl()->getBasePath();
 	}
 
+	/**
+	 * @return string[]
+	 */
 	public function getJavascript(): array
 	{
 		return [
-			'https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js',
-			'https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js',
-			'https://cdn.jsdelivr.net/npm/admin-lte@3.1/dist/js/adminlte.min.js',
+			sprintf('https://cdn.jsdelivr.net/npm/jquery@%s/dist/jquery.min.js', $this->jqueryVersion),
+			sprintf('https://cdn.jsdelivr.net/npm/bootstrap@%s/dist/js/bootstrap.bundle.min.js', $this->bootstrapVersion),
+			sprintf('https://cdn.jsdelivr.net/npm/admin-lte@%s/dist/js/adminlte.min.js', $this->adminLteVersion),
 		];
 	}
 
+	/**
+	 * @return string[]
+	 */
 	public function getStylesheet(): array
 	{
 		return [
 			'https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback',
-			'https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css',
-			'https://cdn.jsdelivr.net/npm/admin-lte@3.1/dist/css/adminlte.min.css',
+			sprintf('https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@%s/css/all.min.css', $this->fontAwesomeVersion),
+			sprintf('https://cdn.jsdelivr.net/npm/admin-lte@%s/dist/css/adminlte.min.css', $this->adminLteVersion),
 		];
 	}
 
