@@ -3,6 +3,7 @@
 namespace WebChemistry\AdminLTE\DI;
 
 use Nette\DI\CompilerExtension;
+use WebChemistry\AdminLTE\Component\TableComponentFactory;
 use WebChemistry\AdminLTE\Utility\AdministrationUtilityFactory;
 
 final class AdminLTEExtension extends CompilerExtension
@@ -14,6 +15,9 @@ final class AdminLTEExtension extends CompilerExtension
 
 		$builder->addFactoryDefinition($this->prefix('utilityFactory'))
 			->setImplement(AdministrationUtilityFactory::class);
+
+		$builder->addFactoryDefinition($this->prefix('tableFactory'))
+			->setImplement(TableComponentFactory::class);
 	}
 
 }

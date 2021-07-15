@@ -5,6 +5,7 @@ namespace WebChemistry\AdminLTE\Utility;
 use Doctrine\ORM\EntityManagerInterface;
 use LogicException;
 use Nette\Application\UI\Presenter;
+use WebChemistry\AdminLTE\Component\TableComponentFactory;
 use WebChemistry\AdminLTE\Utility\Action\DefaultAction;
 use WebChemistry\AdminLTE\Utility\Action\EditAction;
 
@@ -14,13 +15,14 @@ final class AdministrationUtility
 	public function __construct(
 		private Presenter $presenter,
 		private EntityManagerInterface $em,
+		private TableComponentFactory $tableComponentFactory,
 	)
 	{
 	}
 
 	public function createAction(string $action, string $title): DefaultAction
 	{
-		return new DefaultAction($this->presenter, $this->em, $action, $title);
+		return new DefaultAction($this->presenter, $this->em, $this->tableComponentFactory, $action, $title);
 	}
 
 	public function createEditAction(string $entityClass, string $title, string $controlName): EditAction
