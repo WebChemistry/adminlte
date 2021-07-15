@@ -44,7 +44,7 @@ final class TableComponent extends Control
 			$val = $this->propertyAccessor->getValue($value, $column);
 
 			if ($callback !== null) {
-				$val = $callback($val);
+				$val = $callback($val, $value);
 			}
 
 			$values[] = $val;
