@@ -240,6 +240,24 @@
 	<!-- ./wrapper -->
 
 	<script n:foreach="$config->getJavascript() as $js" src="{$js}"></script>
+	<script>
+		(function () {
+			if (window.globalChart === undefined) {
+				return;
+			}
+			if (typeof Chart === 'undefined') {
+				console.error('ChartJs is not installed.');
+				return;
+			}
 
+			Object.entries(window.globalChart).forEach(([ key, value ]) => {
+				console.log(value);
+				new Chart(
+					document.querySelector('[data-chart="' + key + '"]'),
+					value
+				);
+			});
+		})();
+	</script>
 </body>
 </html>

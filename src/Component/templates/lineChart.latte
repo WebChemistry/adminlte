@@ -1,0 +1,8 @@
+<div n:tag-if="$height" style="position:relative;height:{$height}px;width: 100%">
+	<canvas data-chart="{$id}"></canvas>
+</div>
+
+<script>
+	window.globalChart = (window.globalChart || {});
+	window.globalChart[{$id}] = {$config};
+</script>

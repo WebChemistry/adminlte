@@ -3,7 +3,10 @@
 namespace WebChemistry\AdminLTE\DI;
 
 use Nette\DI\CompilerExtension;
+use WebChemistry\AdminLTE\Component\LineChartComponentFactory;
 use WebChemistry\AdminLTE\Component\TableComponentFactory;
+use WebChemistry\AdminLTE\Utility\Action\DefaultActionFactory;
+use WebChemistry\AdminLTE\Utility\Action\EditActionFactory;
 use WebChemistry\AdminLTE\Utility\AdministrationUtilityFactory;
 
 final class AdminLTEExtension extends CompilerExtension
@@ -18,6 +21,15 @@ final class AdminLTEExtension extends CompilerExtension
 
 		$builder->addFactoryDefinition($this->prefix('tableFactory'))
 			->setImplement(TableComponentFactory::class);
+
+		$builder->addFactoryDefinition($this->prefix('lineChartFactory'))
+			->setImplement(LineChartComponentFactory::class);
+
+		$builder->addFactoryDefinition($this->prefix('defaultActionFactory'))
+			->setImplement(DefaultActionFactory::class);
+
+		$builder->addFactoryDefinition($this->prefix('editActionFactory'))
+			->setImplement(EditActionFactory::class);
 	}
 
 }

@@ -18,6 +18,11 @@ trait AdministrationPresenter
 		'infoBoxContainer' => __DIR__ . '/templates/info.box.container.latte',
 	];
 
+	final public function getConfiguration(): AdministrationConfiguration
+	{
+		return $this->configuration;
+	}
+
 	final public function injectAdminPresenter(
 		AdministrationConfiguration $configuration,
 	): void

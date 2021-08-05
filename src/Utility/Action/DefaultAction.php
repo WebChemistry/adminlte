@@ -6,6 +6,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Nette\Application\UI\Control;
 use Nette\Application\UI\ITemplate;
 use Nette\Application\UI\Presenter;
+use WebChemistry\AdminLTE\Component\LineChartComponentFactory;
 use WebChemistry\AdminLTE\Component\TableComponentFactory;
 
 final class DefaultAction extends Action
@@ -27,10 +28,26 @@ final class DefaultAction extends Action
 		private Presenter $presenter,
 		private EntityManagerInterface $em,
 		private TableComponentFactory $tableComponentFactory,
+		private LineChartComponentFactory $lineChartComponentFactory,
 		private string $action,
 		private string $title,
 	)
 	{
+	}
+
+	public function addLineChart(string $title, array $labels, array $values, ?callable $callback = null): self
+	{
+		$control = $this->lineChartComponentFactory->create($labels, $values);
+		$this->enableExtension($this->presenter, 'chartJs');
+
+		if ($callback) {
+			$callback($control);
+		}
+
+		$this->panels[] = [$title, $control];
+		$this->attach[] = $control;
+
+		return $this;
 	}
 
 	public function addInfoBox(string $title, mixed $content): self

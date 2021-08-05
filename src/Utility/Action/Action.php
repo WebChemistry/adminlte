@@ -2,11 +2,17 @@
 
 namespace WebChemistry\AdminLTE\Utility\Action;
 
+use LogicException;
+use Nette\Application\IPresenter;
 use Nette\Application\UI\ITemplate;
 use Nette\Application\UI\Presenter;
+use WebChemistry\AdminLTE\AdministrationConfiguration;
 
 abstract class Action
 {
+
+	/** @var array<string, bool> */
+	private array $enabledExtensions = [];
 
 	abstract public function run(): void;
 
@@ -31,6 +37,30 @@ abstract class Action
 		$template->embedPath = __DIR__ . '/../../templates/';
 
 		return $template;
+	}
+
+	protected function enableExtension(IPresenter $presenter, string $name): void
+	{
+		if (isset($this->enabledExtensions[$name])) {
+			return;
+		}
+		
+		if (!method_exists($presenter, 'getConfiguration')) {
+			throw new LogicException(sprintf('Cannot enable admin extensions %s in %s.', $name, $presenter::class));
+		}
+
+		$configuration = $presenter->getConfiguration();
+		if (!$configuration instanceof AdministrationConfiguration) {
+			throw new LogicException(
+				sprintf(
+					'Configuration returned from %s must be instance of %s.',
+					$presenter::class,
+					AdministrationConfiguration::class
+				)
+			);
+		}
+
+		$configuration->enableExtension($name);
 	}
 
 }

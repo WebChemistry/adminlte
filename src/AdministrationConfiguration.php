@@ -2,6 +2,8 @@
 
 namespace WebChemistry\AdminLTE;
 
+use JetBrains\PhpStorm\ExpectedValues;
+use LogicException;
 use Nette\Application\LinkGenerator;
 use Nette\Application\UI\Link;
 use Nette\Application\UI\Presenter;
@@ -26,6 +28,10 @@ abstract class AdministrationConfiguration
 	protected string $jqueryVersion = '3.6.0';
 
 	protected string $fontAwesomeVersion = '5.15.3';
+
+	private array $extensions = [
+		'chartJs' => false,
+	];
 
 	public function __construct(
 		private IRequest $request,
@@ -111,11 +117,17 @@ abstract class AdministrationConfiguration
 	 */
 	public function getJavascript(): array
 	{
-		return [
+		$array = [
 			sprintf('https://cdn.jsdelivr.net/npm/jquery@%s/dist/jquery.min.js', $this->jqueryVersion),
 			sprintf('https://cdn.jsdelivr.net/npm/bootstrap@%s/dist/js/bootstrap.bundle.min.js', $this->bootstrapVersion),
 			sprintf('https://cdn.jsdelivr.net/npm/admin-lte@%s/dist/js/adminlte.min.js', $this->adminLteVersion),
 		];
+
+		if ($this->extensions['chartJs']) {
+			$array[] = 'https://cdn.jsdelivr.net/npm/chart.js';
+		}
+
+		return $array;
 	}
 
 	/**
@@ -128,6 +140,30 @@ abstract class AdministrationConfiguration
 			sprintf('https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@%s/css/all.min.css', $this->fontAwesomeVersion),
 			sprintf('https://cdn.jsdelivr.net/npm/admin-lte@%s/dist/css/adminlte.min.css', $this->adminLteVersion),
 		];
+	}
+
+	public function enableExtension(
+		#[ExpectedValues(['chartJs'])]
+		string $name,
+	): void
+	{
+		if (!isset($this->extensions[$name])) {
+			throw new LogicException(sprintf('Admin extension %s not exists.', $name));
+		}
+		
+		$this->extensions[$name] = true;
+	}
+
+	public function disableExtension(
+		#[ExpectedValues(['chartJs'])]
+		string $name,
+	): void
+	{
+		if (!isset($this->extensions[$name])) {
+			throw new LogicException(sprintf('Admin extension %s not exists.', $name));
+		}
+
+		$this->extensions[$name] = false;
 	}
 
 }
