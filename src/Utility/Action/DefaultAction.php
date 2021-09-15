@@ -37,6 +37,10 @@ final class DefaultAction extends Action
 
 	public function addLineChart(string $title, array $labels, array $values, ?callable $callback = null): self
 	{
+		if (!$this->show) {
+			return $this;
+		}
+
 		$control = $this->lineChartComponentFactory->create($labels, $values);
 		$this->enableExtension($this->presenter, 'chartJs');
 
@@ -52,6 +56,10 @@ final class DefaultAction extends Action
 
 	public function addInfoBox(string $title, mixed $content): self
 	{
+		if (!$this->show) {
+			return $this;
+		}
+
 		$this->infoBoxes[] = [$title, (string) $content];
 
 		return $this;
@@ -59,6 +67,10 @@ final class DefaultAction extends Action
 
 	public function addTable(string $title, array $values, array $columns, array $headers): self
 	{
+		if (!$this->show) {
+			return $this;
+		}
+
 		$this->panels[] = [$title, $control = $this->tableComponentFactory->create($values, $columns, $headers)];
 		$this->attach[] = $control;
 
@@ -67,6 +79,10 @@ final class DefaultAction extends Action
 
 	public function addPanelWithControlName(string $title, string $controlName): self
 	{
+		if (!$this->show) {
+			return $this;
+		}
+
 		$this->panels[] = [$title, $controlName];
 
 		return $this;

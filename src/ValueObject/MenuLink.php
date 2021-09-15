@@ -11,6 +11,7 @@ final class MenuLink
 		private string $name,
 		private Link|string $link,
 		private ?string $icon = null,
+		private bool $show = true,
 	)
 	{
 	}
@@ -33,6 +34,11 @@ final class MenuLink
 	public function getIcon(): ?string
 	{
 		return $this->icon;
+	}
+
+	public function isShow(): bool
+	{
+		return $this->show;
 	}
 
 }

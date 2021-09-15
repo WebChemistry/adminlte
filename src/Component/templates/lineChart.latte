@@ -4,5 +4,22 @@
 
 <script>
 	window.globalChart = (window.globalChart || {});
-	window.globalChart[{$id}] = {$config};
+	window.globalChart[{$id}] = {
+		config: function (ctx) {
+			var config = {$config};
+			var gradientColor = {$gradient};
+			var height = {$height};
+
+			config.data.datasets.forEach(function (dataset) {
+				var gradient = ctx.createLinearGradient(0, 0, 0, height);
+				gradient.addColorStop(0, dataset.backgroundColor);
+				gradient.addColorStop(1, gradientColor);
+
+				dataset.backgroundColor = gradient;
+				dataset.fill = true;
+			});
+
+			return config;
+		},
+	};
 </script>

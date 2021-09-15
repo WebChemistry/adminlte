@@ -12,12 +12,42 @@ final class LineChartComponent extends Control
 	private array $dataset = [];
 
 	private array $options = [
+		'interaction' => [
+			'intersect' => false,
+			'axis' => 'x',
+		],
+		'responsive' => true,
+		'maintainAspectRatio' => false,
 		'plugins' => [
 			'legend' => [
 				'display' => false,
 			],
+			'tooltip' => [
+				'displayColors' => false,
+			],
+		],
+		'scales' => [
+			'x' => [
+				'grid' => [
+					'borderDash' => [8, 4],
+				],
+				'ticks' => [
+					'color' => '#888888',
+				],
+			],
+			'y' => [
+				'grid' => [
+					'borderDash' => [8, 4],
+				],
+				'ticks' => [
+					'color' => '#888888',
+					'precision' => 0,
+				],
+			],
 		],
 	];
+
+	private array $backgroundColor = [63, 103, 145, 1];
 
 	private ?int $height = null;
 
@@ -47,6 +77,7 @@ final class LineChartComponent extends Control
 
 		$template->id = $this->getUniqueId();
 		$template->height = $this->height;
+		$template->gradient = $this->toRGBA($this->backgroundColor[0], $this->backgroundColor[1], $this->backgroundColor[2], 0.2);
 		$template->config = [
 			'type' => 'line',
 			'data' => $data,
@@ -56,11 +87,24 @@ final class LineChartComponent extends Control
 		$template->render();
 	}
 
+	public function setBackgroundColor(int $red, int $green, int $blue, int $opacity = 1): void
+	{
+		$this->backgroundColor = [$red, $green, $blue, $opacity];
+	}
+
+	private function toRGBA(int $red, int $green, int $blue, float $opacity = 1): string
+	{
+		return sprintf('rgba(%d,%d,%d,%s)', $red, $green, $blue, number_format($opacity, 1));
+	}
+
 	private function processDataset(array $dataset): array
 	{
-		$dataset['label'] ??= 'Chart';
-		$dataset['backgroundColor'] ??= 'rgb(63,103,145)';
-		$dataset['borderColor'] ??= 'rgb(63,103,145)';
+		$dataset['label'] ??= 'Value';
+		$dataset['backgroundColor'] = $this->toRGBA(...$this->backgroundColor);
+		$dataset['borderColor'] ??= $this->toRGBA(...$this->backgroundColor);
+		$dataset['tension'] ??= 0.4;
+		$dataset['borderWidth'] ??= 2;
+		$dataset['pointRadius'] ??= 0;
 
 		return $dataset;
 	}

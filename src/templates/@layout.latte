@@ -183,7 +183,7 @@
 				<!-- Sidebar Menu -->
 				<nav class="mt-2">
 					<ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-						<li n:foreach="$config->getMenuLinks() as $menuLink" class="nav-item">
+						<li n:foreach="$config->getMenuLinks() as $menuLink" n:if="$menuLink->isShow()" class="nav-item">
 							<a href="{$menuLink->getLink()}" n:class="'nav-link', $menuLink->isLinkCurrent() ? 'active'">
 								<i n:if="$menuLink->getIcon()" n:class="'nav-icon', $menuLink->getIcon()"></i>
 								<p>{$menuLink->getName()}</p>
@@ -242,20 +242,16 @@
 	<script n:foreach="$config->getJavascript() as $js" src="{$js}"></script>
 	<script>
 		(function () {
-			if (window.globalChart === undefined) {
-				return;
-			}
+			if (window.globalChart === undefined) return;
+
 			if (typeof Chart === 'undefined') {
 				console.error('ChartJs is not installed.');
 				return;
 			}
 
-			Object.entries(window.globalChart).forEach(([ key, value ]) => {
-				console.log(value);
-				new Chart(
-					document.querySelector('[data-chart="' + key + '"]'),
-					value
-				);
+			Object.entries(window.globalChart).forEach(function (opts) {
+				var ctx = document.querySelector('[data-chart="' + opts[0] + '"]').getContext('2d');
+				new Chart(ctx, opts[1].config(ctx));
 			});
 		})();
 	</script>

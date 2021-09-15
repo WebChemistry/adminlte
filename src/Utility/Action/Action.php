@@ -14,6 +14,8 @@ abstract class Action
 	/** @var array<string, bool> */
 	private array $enabledExtensions = [];
 
+	protected bool $show = true;
+
 	abstract public function run(): void;
 
 	protected function createTemplate(Presenter $presenter, string $templateFile): ITemplate
@@ -44,7 +46,7 @@ abstract class Action
 		if (isset($this->enabledExtensions[$name])) {
 			return;
 		}
-		
+
 		if (!method_exists($presenter, 'getConfiguration')) {
 			throw new LogicException(sprintf('Cannot enable admin extensions %s in %s.', $name, $presenter::class));
 		}
@@ -61,6 +63,20 @@ abstract class Action
 		}
 
 		$configuration->enableExtension($name);
+	}
+
+	public function withPermission(bool $show): self
+	{
+		$this->show = $show;
+
+		return $this;
+	}
+
+	public function clearPermission(): self
+	{
+		$this->show = true;
+
+		return $this;
 	}
 
 }
