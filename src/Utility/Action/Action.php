@@ -65,14 +65,14 @@ abstract class Action
 		$configuration->enableExtension($name);
 	}
 
-	public function withPermission(bool $show): self
+	public function withPermission(bool $show): static
 	{
 		$this->show = $show;
 
 		return $this;
 	}
 
-	public function clearPermission(): self
+	public function clearPermission(): static
 	{
 		$this->show = true;
 
