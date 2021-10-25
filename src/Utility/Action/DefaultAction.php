@@ -8,6 +8,7 @@ use Nette\Application\UI\ITemplate;
 use Nette\Application\UI\Presenter;
 use WebChemistry\AdminLTE\Component\LineChartComponentFactory;
 use WebChemistry\AdminLTE\Component\TableComponentFactory;
+use WebChemistry\AdminLTE\Utility\Action\Objects\TableColumn;
 
 final class DefaultAction extends Action
 {
@@ -65,13 +66,17 @@ final class DefaultAction extends Action
 		return $this;
 	}
 
-	public function addTable(string $title, array $values, array $columns, array $headers): self
+	/**
+	 * @param TableColumn[] $columns
+	 * @param mixed[] $values
+	 */
+	public function addTable(string $title, array $columns, array $values): self
 	{
 		if (!$this->show) {
 			return $this;
 		}
 
-		$this->panels[] = [$title, $control = $this->tableComponentFactory->create($values, $columns, $headers)];
+		$this->panels[] = [$title, $control = $this->tableComponentFactory->create($values, $columns)];
 		$this->attach[] = $control;
 
 		return $this;

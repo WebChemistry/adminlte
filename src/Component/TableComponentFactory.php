@@ -5,6 +5,6 @@ namespace WebChemistry\AdminLTE\Component;
 interface TableComponentFactory
 {
 
-	public function create(array $values, array $columns, array $headers): TableComponent;
+	public function create(array $values, array $columns): TableComponent;
 
 }
