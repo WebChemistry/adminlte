@@ -51,7 +51,11 @@ final class TableComponent extends Control
 	{
 		$values = [];
 		foreach ($this->columns as $column) {
-			$val = $this->propertyAccessor->getValue($value, $column->getFieldPath());
+			if ($fieldPath = $column->getFieldPath()) {
+				$val = $this->propertyAccessor->getValue($value, $fieldPath);
+			} else {
+				$val = $value;
+			}
 
 			if (($renderer = $column->getRenderer()) !== null) {
 				$val = $renderer($val, $value);

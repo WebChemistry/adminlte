@@ -2,6 +2,7 @@
 
 namespace WebChemistry\AdminLTE\Utility\Action\Objects;
 
+use BadMethodCallException;
 use WebChemistry\AdminLTE\Utility\Action\Objects\Enums\TableColumnFormatEnum;
 
 final class TableColumn
@@ -15,13 +16,17 @@ final class TableColumn
 	 */
 	public function __construct(
 		private string $caption,
-		private string $fieldPath,
+		private ?string $fieldPath = null,
 		?callable $renderer = null,
 		private ?TableColumnFormatEnum $format = null,
 		private array $options = [],
 	)
 	{
 		$this->renderer = $renderer;
+
+		if (!$renderer && !$this->fieldPath) {
+			throw new BadMethodCallException('Renderer or fieldPath must be set.');
+		}
 	}
 
 	public function getCaption(): string
@@ -29,7 +34,7 @@ final class TableColumn
 		return $this->caption;
 	}
 
-	public function getFieldPath(): string
+	public function getFieldPath(): ?string
 	{
 		return $this->fieldPath;
 	}
