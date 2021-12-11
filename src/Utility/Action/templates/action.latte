@@ -3,7 +3,7 @@
 {/block}
 
 {block content}
-	{foreach $infoBoxes as [$title, $content]}
+	{foreach $infoBoxes as $infoBox}
 		<div class="row">
 			{iterateWhile}
 				{if $iterator->getCounter() % 3 === 0}
@@ -14,8 +14,8 @@
 {*						<span n:ifset="icon" n:class="'info-box-icon elevation-1', $bg ?: 'bg-info'">{include icon}</span>*}
 
 						<div class="info-box-content">
-							<span class="info-box-text">{$title}</span>
-							<span class="info-box-number">{$content}</span>
+							<span class="info-box-text">{$infoBox->title}</span>
+							<span class="info-box-number">{$infoBox->content}</span>
 						</div>
 					</div>
 				</div>
@@ -23,11 +23,11 @@
 		</div>
 	{/foreach}
 
-	{foreach $panels as [$title, $controlName]}
+	{foreach $panels as $panel}
 		{embed $embedPath . '/box.latte'}
-			{block title}{$title}{/block}
+			{block title}{$panel->title}{/block}
 			{block content}
-				{control $controlName}
+				{control $panel->getControl()}
 			{/block}
 		{/embed}
 	{/foreach}

@@ -10,6 +10,7 @@ use Nette\Application\UI\Presenter;
 use Nette\Application\UI\Template;
 use WebChemistry\AdminLTE\Component\LineChartComponentFactory;
 use WebChemistry\AdminLTE\Component\TableComponentFactory;
+use WebChemistry\AdminLTE\Utility\Action\Control\LazyControl;
 use WebChemistry\AdminLTE\Utility\Action\Injection\DefaultActionInjectionFactory;
 
 /**
@@ -46,9 +47,8 @@ final class EditAction extends DefaultAction
 
 		parent::__construct($presenter, $action, $title, $defaultActionInjectionFactory);
 
-		$entity = $this->getEntity();
 		if (is_callable($control)) {
-			$this->addPanel($title, $component = ($control)($entity), true);
+			$this->addPanel($title, new LazyControl(fn () => ($control)($entity)));
 		} else {
 			$this->addPanelWithControlName($title, $control);
 		}
@@ -63,7 +63,7 @@ final class EditAction extends DefaultAction
 			$id = $this->id ?? $this->presenter->getParameter('id');
 
 			if (!$id || !($entity = $this->em->getRepository($this->class)->find($id))) {
-				$presenter->error();
+				$this->presenter->error();
 			}
 
 			$this->entity = $entity;
@@ -77,7 +77,7 @@ final class EditAction extends DefaultAction
 	 */
 	public function addPanelWithEntity(string $title, callable $factory): self
 	{
-		$this->addPanel($title, $factory($this->getEntity()), true);
+		$this->addPanel($title, new LazyControl(fn () => $factory($this->getEntity())));
 
 		return $this;
 	}

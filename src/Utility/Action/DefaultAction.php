@@ -8,24 +8,25 @@ use Nette\Application\UI\Form;
 use Nette\Application\UI\ITemplate;
 use Nette\Application\UI\Presenter;
 use Nette\Application\UI\Template;
+use Nette\ComponentModel\Component;
 use Nette\Utils\Arrays;
 use WebChemistry\AdminLTE\Component\LineChartComponentFactory;
 use WebChemistry\AdminLTE\Component\TableComponentFactory;
+use WebChemistry\AdminLTE\Utility\Action\Control\LazyControl;
 use WebChemistry\AdminLTE\Utility\Action\Injection\DefaultActionInjection;
 use WebChemistry\AdminLTE\Utility\Action\Injection\DefaultActionInjectionFactory;
+use WebChemistry\AdminLTE\Utility\Action\Objects\InfoBox;
+use WebChemistry\AdminLTE\Utility\Action\Objects\Panel;
 use WebChemistry\AdminLTE\Utility\Action\Objects\TableColumn;
 
 class DefaultAction extends Action
 {
 
-	/** @var array{string, string|Control|Form}[] */
+	/** @var Panel[] */
 	protected array $panels = [];
 
-	/** @var array{string, string}[] */
+	/** @var InfoBox[] */
 	protected array $infoBoxes = [];
-
-	/** @var array<int, Control|Form> */
-	protected array $attach = [];
 
 	/** @var callable(Presenter): void */
 	protected array $onRun = [];
@@ -59,15 +60,12 @@ class DefaultAction extends Action
 			return $this;
 		}
 
-		$control = $this->lineChartComponentFactory->create($labels, $values);
+		$this->addPanel($title, $control = $this->lineChartComponentFactory->create($labels, $values));
 		$this->enableExtension($this->presenter, 'chartJs');
 
 		if ($callback) {
 			$callback($control);
 		}
-
-		$this->panels[] = [$title, $control];
-		$this->attach[] = $control;
 
 		return $this;
 	}
@@ -78,7 +76,7 @@ class DefaultAction extends Action
 			return $this;
 		}
 
-		$this->infoBoxes[] = [$title, (string) $content];
+		$this->infoBoxes[] = new InfoBox($title, (string) $content);
 
 		return $this;
 	}
@@ -93,18 +91,17 @@ class DefaultAction extends Action
 			return $this;
 		}
 
-		$this->addPanel($title, $this->tableComponentFactory->create($values, $columns), true);
+		$this->addPanel($title, $this->tableComponentFactory->create($values, $columns));
 
 		return $this;
 	}
 
-	public function addPanel(string $title, Control|Form $control, bool $attach = false): static
+	public function addPanel(
+		string $title,
+		Component|LazyControl $control,
+	): static
 	{
-		$this->panels[] = [$title, $control];
-
-		if ($attach) {
-			$this->attach[] = $control;
-		}
+		$this->panels[] = new Panel($title, $control);
 
 		return $this;
 	}
@@ -115,7 +112,7 @@ class DefaultAction extends Action
 			return $this;
 		}
 
-		$this->panels[] = [$title, $controlName];
+		$this->panels[] = new Panel($title, $controlName);
 
 		return $this;
 	}
@@ -133,8 +130,8 @@ class DefaultAction extends Action
 
 		Arrays::invoke($this->onRun, $this->presenter);
 
-		foreach ($this->attach as $i => $control) {
-			$this->presenter->addComponent($control, 'component_' . $i);
+		foreach ($this->panels as $i => $panel) {
+			$panel->attach($this->presenter, 'component_' . $i);
 		}
 
 		$template = $this->createTemplate($this->presenter, $this->getTemplateFile());
