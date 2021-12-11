@@ -9,6 +9,7 @@ use WebChemistry\AdminLTE\Form\AdminFormFactory;
 use WebChemistry\AdminLTE\Form\AdminFormFactoryInterface;
 use WebChemistry\AdminLTE\Utility\Action\DefaultActionFactory;
 use WebChemistry\AdminLTE\Utility\Action\EditActionFactory;
+use WebChemistry\AdminLTE\Utility\Action\Injection\DefaultActionInjectionFactory;
 use WebChemistry\AdminLTE\Utility\AdministrationUtilityFactory;
 
 final class AdminLTEExtension extends CompilerExtension
@@ -36,6 +37,9 @@ final class AdminLTEExtension extends CompilerExtension
 		$builder->addDefinition($this->prefix('formFactory'))
 			->setType(AdminFormFactoryInterface::class)
 			->setFactory(AdminFormFactory::class);
+
+		$builder->addFactoryDefinition($this->prefix('defaultActionInjectionFactory'))
+			->setImplement(DefaultActionInjectionFactory::class);
 	}
 
 }

@@ -27,6 +27,11 @@ final class AdministrationUtility
 		return $this->defaultActionFactory->create($this->presenter, $action, $title);
 	}
 
+	/**
+	 * @template T of object
+	 * @param class-string<T> $entityClass
+	 * @return EditAction<T>
+	 */
 	public function createEditAction(string $entityClass, string $title, string $controlName): EditAction
 	{
 		return $this->editActionFactory->create($this->presenter, $entityClass, $title, $controlName);
