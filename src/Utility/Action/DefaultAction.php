@@ -12,7 +12,10 @@ use Nette\ComponentModel\Component;
 use Nette\Utils\Arrays;
 use WebChemistry\AdminLTE\Component\LineChartComponentFactory;
 use WebChemistry\AdminLTE\Component\TableComponentFactory;
+use WebChemistry\AdminLTE\Utility\Action\Argument\FormArgument;
 use WebChemistry\AdminLTE\Utility\Action\Control\LazyControl;
+use WebChemistry\AdminLTE\Utility\Action\Control\LazyControlInterface;
+use WebChemistry\AdminLTE\Utility\Action\Control\LazyForm;
 use WebChemistry\AdminLTE\Utility\Action\Injection\DefaultActionInjection;
 use WebChemistry\AdminLTE\Utility\Action\Injection\DefaultActionInjectionFactory;
 use WebChemistry\AdminLTE\Utility\Action\Objects\InfoBox;
@@ -96,9 +99,35 @@ class DefaultAction extends Action
 		return $this;
 	}
 
+	public function addForm(string $title, Form|LazyForm $form, ?FormArgument $argument = null): static
+	{
+		$argument ??= new FormArgument();
+		$this->panels[] = $panel = new Panel($title, $form);
+
+		$panel->onAttached[] = function (Form $form, Presenter $presenter) use ($argument): void {
+			$form->onSuccess[] = function () use ($argument, $presenter): void {
+				$flashMessage = $argument->flashMessage;
+				if ($flashMessage) {
+					$presenter->flashMessage($flashMessage, 'success');
+				}
+
+				$redirect = $argument->redirect;
+				if ($redirect) {
+					if (is_string($redirect)) {
+						$presenter->redirect($redirect);
+					} else {
+						$redirect->getComponent()->redirect($redirect->getDestination(), ...$redirect->getParameters());
+					}
+				}
+			};
+		};
+
+		return $this;
+	}
+
 	public function addPanel(
 		string $title,
-		Component|LazyControl $control,
+		Component|LazyControlInterface $control,
 	): static
 	{
 		$this->panels[] = new Panel($title, $control);

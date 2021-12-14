@@ -2,16 +2,16 @@
 
 namespace WebChemistry\AdminLTE\Utility\Action\Control;
 
-use Nette\ComponentModel\Component;
+use Nette\Application\UI\Form;
 
-final class LazyControl implements LazyControlInterface
+final class LazyForm implements LazyControlInterface
 {
 
-	/** @var callable(): Component */
+	/** @var callable(): Form */
 	private $factory;
 
 	/**
-	 * @var callable(): Component
+	 * @var callable(): Form
 	 */
 	public function __construct(
 		callable $factory,
@@ -20,7 +20,7 @@ final class LazyControl implements LazyControlInterface
 		$this->factory = $factory;
 	}
 
-	public function create(): Component
+	public function create(): Form
 	{
 		return ($this->factory)();
 	}

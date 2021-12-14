@@ -4,19 +4,23 @@ namespace WebChemistry\AdminLTE\Utility\Action\Objects;
 
 use Nette\Application\UI\Presenter;
 use Nette\ComponentModel\Component;
-use WebChemistry\AdminLTE\Utility\Action\Control\LazyControl;
+use Nette\Utils\Arrays;
+use WebChemistry\AdminLTE\Utility\Action\Control\LazyControlInterface;
 
 final class Panel
 {
 
 	private Component|string $finalControl;
 
+	/** @var (callable(Component, Presenter): void)[] */
+	public $onAttached = [];
+
 	public function __construct(
 		public string $title,
-		private Component|LazyControl|string $control,
+		private Component|LazyControlInterface|string $control,
 	)
 	{
-		if (!$this->control instanceof LazyControl) {
+		if (!$this->control instanceof LazyControlInterface) {
 			$this->finalControl = $this->control;
 		}
 	}
@@ -32,10 +36,14 @@ final class Panel
 			return;
 		}
 
-		if ($this->control instanceof LazyControl) {
-			$presenter->addComponent($this->finalControl = $this->control->create(), $name);
+		if ($this->control instanceof LazyControlInterface) {
+			$presenter->addComponent($this->finalControl = $control = $this->control->create(), $name);
+
+			Arrays::invoke($this->onAttached, $control, $presenter);
 		} else if (!$this->control->getParent()) {
-			$presenter->addComponent($this->control, $name);
+			$presenter->addComponent($control = $this->control, $name);
+
+			Arrays::invoke($this->onAttached, $control, $presenter);
 		}
 	}
 
